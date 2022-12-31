@@ -1,4 +1,4 @@
-from images.backend_functions import DataManager
+from backend_functions import DataManager
 
 api_url = 'https://gmail.googleapis.com/$discovery/rest?version=v1'
 
