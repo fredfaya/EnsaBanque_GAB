@@ -2,17 +2,20 @@ import requests
 import json
 
 
-class DataManager:
-    def __init__(self,
-                 api_url):
-        self.api_url = api_url
+def getTransfert(ref, pin):
+    api_url = "https://transfert-service-01.herokuapp.com/api/v0/transfer_service_api/UTransfer/pin_code/" + ref + "?code_pin=" + pin
 
-    def getData(self):
-        response_API = requests.get(self.api_url)
-        print(response_API.status_code)
-        data = response_API.text
-        parse_json = json.loads(data)
-        info = parse_json['description']
-        print("Info about API:\n", info)
-        key = parse_json['parameters']['key']['description']
-        print("\nDescription about the key:\n", key)
+    response = requests.get(api_url)
+    if response.text == " wrong REFERENCE !":
+        return "wrong reference"
+    if response.text == " wrong PIN CODE !":
+        return "wrong pin"
+    if response.status_code == 500:
+        return "server issue"
+
+    return response.text
+
+
+'''res = getTransfert("8374181449104","L49SgSoV")
+res = json.loads(res)
+print(res['transfers'][0]['amount'])'''
