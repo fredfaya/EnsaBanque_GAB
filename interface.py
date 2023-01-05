@@ -118,45 +118,46 @@ if choice == 'Other Service':
 
     columns_button_search = st.columns((2.25, 1, 2))
 
-    if columns_button_search[1].button('Search') and transfert_reference != "" and transfert_pin != "":
+    if columns_button_search[1].button('Search'):
 
-        space_div()
-
-        transfert_searched_json = backend_functions.getTransfert(transfert_reference, transfert_pin)
-
-        columns_infos_title = st.columns((0.65, 2, 0.15))
-        columns_infos = st.columns((0.30, 2, 0.25))
-
-        if transfert_searched_json == "wrong reference":
-            modal1.open()
-        elif transfert_searched_json == "wrong pin":
-            modal2.open()
-        elif transfert_searched_json == "server issue":
-            modal3.open()
-        else:
-
-            transfert_searched = json.loads(transfert_searched_json)
-            agentId = transfert_searched['sentByAgentWithId']
-            firstName = transfert_searched['senderFirstName']
-            lastName = transfert_searched['senderLastName']
-            date = transfert_searched['endedAt'].split("T")[0] + " at " + \
-                   transfert_searched['endedAt'].split("T")[1].split(".")[0]
-            amount = transfert_searched['transfers'][0]['amount']
-            receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
-            receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
-
-            columns_infos_title[1].header("TRANSFERT INFORMATIONS")
-
-            display_info_transfert()
-
+        if transfert_reference != "" and transfert_pin != "":
             space_div()
 
-            columns_button_validate = st.columns((2.2, 1, 2))
+            transfert_searched_json = backend_functions.getTransfert(transfert_reference, transfert_pin)
 
-            if columns_button_validate[1].button('Validate Payment', type='primary'):
-                modal4.open()
-    else:
-        modal5.open()
+            columns_infos_title = st.columns((0.65, 2, 0.15))
+            columns_infos = st.columns((0.30, 2, 0.25))
+
+            if transfert_searched_json == "wrong reference":
+                modal1.open()
+            elif transfert_searched_json == "wrong pin":
+                modal2.open()
+            elif transfert_searched_json == "server issue":
+                modal3.open()
+            else:
+
+                transfert_searched = json.loads(transfert_searched_json)
+                agentId = transfert_searched['sentByAgentWithId']
+                firstName = transfert_searched['senderFirstName']
+                lastName = transfert_searched['senderLastName']
+                date = transfert_searched['endedAt'].split("T")[0] + " at " + \
+                       transfert_searched['endedAt'].split("T")[1].split(".")[0]
+                amount = transfert_searched['transfers'][0]['amount']
+                receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
+                receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
+
+                columns_infos_title[1].header("TRANSFERT INFORMATIONS")
+
+                display_info_transfert()
+
+                space_div()
+
+                columns_button_validate = st.columns((2.2, 1, 2))
+
+                if columns_button_validate[1].button('Validate Payment', type='primary'):
+                    modal4.open()
+        else:
+            modal5.open()
 
 
 else:
@@ -279,7 +280,7 @@ elif modal5.is_open():
         '''
         components.html(html_string)
 
-        columns_button_text = st.columns((2.35, 1, 2))
+        columns_button_text = st.columns((2.5, 2, 2))
         columns_button_text[1].write("Please fill in all fields :smiley:")
         columns_button_close = st.columns((2.7, 1, 2))
 
