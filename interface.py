@@ -29,32 +29,32 @@ def display_info_transfert():
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css" integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn" crossorigin="anonymous">
 
-        <div class="shadow bg-primary rounded pt-5 pb-5">
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75 rounded-top">
+        <div class="shadow bg-primary rounded pt-3 pb-3">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-2 w-75 rounded-top">
                 <div class="form-label" style="font-weight: bold;">Agence ID</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
                 <div class="form-label" style="font-weight: bold;">First Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
                 <div class="form-label" style="font-weight: bold;">Last Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
                 <div class="form-label" style="font-weight: bold;">Date of issue</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
                 <div class="form-label" style="font-weight: bold;">Amount</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
                 <div class="form-label" style="font-weight: bold;">Receiver First Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
-            <div class="row m-auto d-flex justify-content-between p-3 bg-white w-75 rounded-bottom">
+            <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 pb-2 w-75 rounded-bottom">
                 <div class="form-label" style="font-weight: bold;">Receiver Last Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
@@ -95,9 +95,9 @@ modal7 = Modal("Transfert Blocked", key="blk")
 modal8 = Modal("Transfert Restitued", key="rsd")
 modal9 = Modal("Disinherited Transfert", key="dhd")
 modal10 = Modal("Transfert Extourned", key="dvd")
+payment_modal = Modal("", key="pay")
 
 # debut de l'ecriture du code de la page ########################################################
-
 
 display_head_image()
 
@@ -110,14 +110,19 @@ space_div()
 
 columns_choice = st.columns((0.5, 2))
 choice = columns_choice[1].radio("Please select a service", ('Consult Wallet', 'Transfert Money', 'Other Service'),
-                                 horizontal=True)
+                                 horizontal=True, key="service_choice")
 
 space_div()
 
 if choice == 'Other Service':
-
+    global transfert_ref
+    global transfert_p
     transfert_reference = st.text_input("Enter the transfert reference", placeholder="Enter your transfert reference")
     transfert_pin = st.text_input("Enter the PIN code", placeholder="Enter your PIN code")
+
+    # pour la partie du modal
+    transfert_ref = transfert_reference
+    transfert_p = transfert_pin
 
     space_div()
 
@@ -154,28 +159,11 @@ if choice == 'Other Service':
                 elif transfert_searched['transfers'][0]["status"] == "EXTOURNE":
                     modal10.open()
                 else:
-                    agentId = transfert_searched['sentByAgentWithId']
-                    firstName = transfert_searched['senderFirstName']
-                    lastName = transfert_searched['senderLastName']
-                    date = transfert_searched['endedAt'].split("T")[0] + " at " + \
-                           transfert_searched['endedAt'].split("T")[1].split(".")[0]
-                    amount = transfert_searched['transfers'][0]['amount']
-                    receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
-                    receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
 
-                    columns_infos_title[1].header("TRANSFERT INFORMATIONS")
+                    payment_modal.open()
 
-                    display_info_transfert()
-
-                    space_div()
-
-                    columns_button_validate = st.columns((2.2, 1, 2))
-
-                    if columns_button_validate[1].button('Validate Payment', type='primary'):
-                        modal4.open()
         else:
             modal5.open()
-
 
 else:
     st.warning("Sorry! This service is not available for now")
@@ -261,23 +249,28 @@ elif modal4.is_open():
         columns_image[1].image(img, width=100)
 
         html_string = '''
-        <h1>Sorry! The service is not available now</h1>
+        <h1>Your Transfert has been payed</h1>
+        <h2>Don't forget to take your money</h2>
 
         <script language="javascript">
-          document.querySelector("h1").style.color = "red";
+          document.querySelector("h1").style.color = "Green";
           document.querySelector("h1").style.textAlign = "center";
+          document.querySelector("h2").style.color = "orange";
+          document.querySelector("h2").style.textAlign = "center";
         </script>
         '''
         components.html(html_string)
 
-        columns_button_text = st.columns((2.35, 1, 2))
-        columns_button_text[1].write("Please retry :smiley:")
         columns_button_close = st.columns((1, 2, 2))
 
-        close_modal4 = columns_button_close[1].button("Download the Receipt")
-        download = columns_button_close[2].button("Finish", type="primary")
+        download = columns_button_close[1].button("Download the Receipt", type="primary")
+        close_modal4 = columns_button_close[2].button("Finish", type="primary")
         if close_modal4:
             modal4.close()
+        if download:
+            st.success("The receipt dowload will begin soon")
+            # modal4.close()
+        payment_modal.close()
 
 elif modal5.is_open():
     with modal5.container():
@@ -426,3 +419,32 @@ elif modal10.is_open():
         close_modal10 = columns_button_close[1].button("OK", type='primary')
         if close_modal10:
             modal10.close()
+
+
+elif payment_modal.is_open():
+    with payment_modal.container():
+
+        transfert_searched_json = backend_functions.getTransfert(transfert_ref, transfert_p)
+        transfert_searched = json.loads(transfert_searched_json)
+
+        agentId = transfert_searched['sentByAgentWithId']
+        firstName = transfert_searched['senderFirstName']
+        lastName = transfert_searched['senderLastName']
+        date = transfert_searched['endedAt'].split("T")[0] + " at " + \
+               transfert_searched['endedAt'].split("T")[1].split(".")[0]
+        amount = transfert_searched['transfers'][0]['amount']
+        receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
+        receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
+
+        columns_header = st.columns((1.56, 4, 0.75))
+        columns_header[1].header("TRANSFERT INFORMATIONS")
+
+        display_info_transfert()
+
+        space_div()
+
+        columns_button_validate = st.columns((2.2, 1, 2))
+        if columns_button_validate[1].button('Validate Payment', type='primary'):
+            payed = backend_functions.serve_transfert(transfert_ref)
+            if payed:
+                modal4.open()

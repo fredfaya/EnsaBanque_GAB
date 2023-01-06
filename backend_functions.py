@@ -1,5 +1,4 @@
 import requests
-import json
 
 
 def getTransfert(ref, pin):
@@ -15,6 +14,15 @@ def getTransfert(ref, pin):
 
     return response.text
 
+
+def serve_transfert(ref):
+    api_url = "https://transfert-service-01.herokuapp.com/api/v0/transfer_service_api/UTransfer/serve/" + ref
+    response = requests.put(api_url)
+
+    if response.status_code == 200:
+        return True
+    else:
+        return "error"
 
 '''res = getTransfert("8374181449104","L49SgSoV")
 res = json.loads(res)
