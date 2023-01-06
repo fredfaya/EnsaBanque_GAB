@@ -90,6 +90,11 @@ modal2 = Modal("Wrong Pin", key="pin")
 modal3 = Modal("Server error", key="err")
 modal4 = Modal("Transfert Payed", key="vld")
 modal5 = Modal("Empty fields", key="emp")
+modal6 = Modal("Transfert Served", key="svd")
+modal7 = Modal("Transfert Blocked", key="blk")
+modal8 = Modal("Transfert Restitued", key="rsd")
+modal9 = Modal("Disinherited Transfert", key="dhd")
+modal10 = Modal("Transfert Extourned", key="dvd")
 
 # debut de l'ecriture du code de la page ########################################################
 
@@ -134,35 +139,46 @@ if choice == 'Other Service':
                 modal2.open()
             elif transfert_searched_json == "server issue":
                 modal3.open()
+
             else:
-
                 transfert_searched = json.loads(transfert_searched_json)
-                agentId = transfert_searched['sentByAgentWithId']
-                firstName = transfert_searched['senderFirstName']
-                lastName = transfert_searched['senderLastName']
-                date = transfert_searched['endedAt'].split("T")[0] + " at " + \
-                       transfert_searched['endedAt'].split("T")[1].split(".")[0]
-                amount = transfert_searched['transfers'][0]['amount']
-                receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
-                receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
 
-                columns_infos_title[1].header("TRANSFERT INFORMATIONS")
+                if transfert_searched['transfers'][0]["status"] == "SERVIE":
+                    modal6.open()
+                elif transfert_searched['transfers'][0]["status"] == "BLOCKED":
+                    modal7.open()
+                elif transfert_searched['transfers'][0]["status"] == "RESTITUE":
+                    modal8.open()
+                elif transfert_searched['transfers'][0]["status"] == "DESHERENCE":
+                    modal9.open()
+                elif transfert_searched['transfers'][0]["status"] == "EXTOURNE":
+                    modal10.open()
+                else:
+                    agentId = transfert_searched['sentByAgentWithId']
+                    firstName = transfert_searched['senderFirstName']
+                    lastName = transfert_searched['senderLastName']
+                    date = transfert_searched['endedAt'].split("T")[0] + " at " + \
+                           transfert_searched['endedAt'].split("T")[1].split(".")[0]
+                    amount = transfert_searched['transfers'][0]['amount']
+                    receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
+                    receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
 
-                display_info_transfert()
+                    columns_infos_title[1].header("TRANSFERT INFORMATIONS")
 
-                space_div()
+                    display_info_transfert()
 
-                columns_button_validate = st.columns((2.2, 1, 2))
+                    space_div()
 
-                if columns_button_validate[1].button('Validate Payment', type='primary'):
-                    modal4.open()
+                    columns_button_validate = st.columns((2.2, 1, 2))
+
+                    if columns_button_validate[1].button('Validate Payment', type='primary'):
+                        modal4.open()
         else:
             modal5.open()
 
 
 else:
     st.warning("Sorry! This service is not available for now")
-
 
 if modal1.is_open():
     with modal1.container():
@@ -287,3 +303,126 @@ elif modal5.is_open():
         close_modal5 = columns_button_close[1].button("OK", type='primary')
         if close_modal5:
             modal5.close()
+
+elif modal6.is_open():
+    with modal6.container():
+
+        columns_image = st.columns((2.4, 1, 2))
+        img = Image.open("./images/smile.png")
+        columns_image[1].image(img, width=100)
+
+        html_string = '''
+        <h1>The Transfert has already been served !</h1>
+
+        <script language="javascript">
+          document.querySelector("h1").style.color = "cyan";
+          document.querySelector("h1").style.textAlign = "center";
+        </script>
+        '''
+        components.html(html_string)
+
+        columns_button_close = st.columns((2.7, 1, 2))
+
+        close_modal6 = columns_button_close[1].button("OK", type='primary')
+        if close_modal6:
+            modal6.close()
+
+elif modal7.is_open():
+    with modal7.container():
+
+        columns_image = st.columns((2.4, 1, 2))
+        img = Image.open("./images/disappointed.png")
+        columns_image[1].image(img, width=100)
+
+        html_string = '''
+        <h1>The Transfert has been blocked !</h1>
+
+        <script language="javascript">
+          document.querySelector("h1").style.color = "red";
+          document.querySelector("h1").style.textAlign = "center";
+        </script>
+        '''
+        components.html(html_string)
+
+        columns_button_text = st.columns((1.8, 9, 1.7))
+        columns_button_text[1].write("Please contact the sender or the administrator for more informations :smiley:")
+        columns_button_close = st.columns((2.7, 1, 2))
+
+        close_modal7 = columns_button_close[1].button("OK", type='primary')
+        if close_modal7:
+            modal7.close()
+
+elif modal8.is_open():
+    with modal8.container():
+
+        columns_image = st.columns((2.4, 1, 2))
+        img = Image.open("./images/sad.png")
+        columns_image[1].image(img, width=100)
+
+        html_string = '''
+        <h1>The Transfert has been Returned !</h1>
+
+        <script language="javascript">
+          document.querySelector("h1").style.color = "red";
+          document.querySelector("h1").style.textAlign = "center";
+        </script>
+        '''
+        components.html(html_string)
+
+        columns_button_text = st.columns((1.8, 9, 1.7))
+        columns_button_text[1].write("Please contact the sender or the administrator for more informations :smiley:")
+        columns_button_close = st.columns((2.7, 1, 2))
+
+        close_modal8 = columns_button_close[1].button("OK", type='primary')
+        if close_modal8:
+            modal8.close()
+
+elif modal9.is_open():
+    with modal9.container():
+
+        columns_image = st.columns((2.4, 1, 2))
+        img = Image.open("./images/scared.png")
+        columns_image[1].image(img, width=100)
+
+        html_string = '''
+        <h1>The Transfert has been Disinherited !</h1>
+        <h3>Ask the sender to send you the transfert again or contact the administrator</h3>
+
+        <script language="javascript">
+          document.querySelector("h1").style.color = "red";
+          document.querySelector("h1").style.textAlign = "center";
+          document.querySelector("h3").style.color = "orange";
+          document.querySelector("h3").style.textAlign = "center";
+        </script>
+        '''
+        components.html(html_string)
+        columns_button_close = st.columns((2.7, 1, 2))
+
+        close_modal9 = columns_button_close[1].button("OK", type='primary')
+        if close_modal9:
+            modal9.close()
+
+elif modal10.is_open():
+    with modal10.container():
+
+        columns_image = st.columns((2.4, 1, 2))
+        img = Image.open("./images/sad.png")
+        columns_image[1].image(img, width=100)
+
+        html_string = '''
+        <h1>The Transfert has been Extourned !</h1>
+
+        <script language="javascript">
+          document.querySelector("h1").style.color = "red";
+          document.querySelector("h1").style.textAlign = "center";
+        </script>
+        '''
+        components.html(html_string)
+
+        columns_button_text = st.columns((1.8, 9, 1.7))
+        columns_button_text[1].write("Please contact the sender or the administrator for more informations :smiley:")
+        columns_button_close = st.columns((2.7, 1, 2))
+
+        close_modal10 = columns_button_close[1].button("OK", type='primary')
+        if close_modal10:
+            modal10.close()
