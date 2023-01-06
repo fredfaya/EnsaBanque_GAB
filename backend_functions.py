@@ -24,6 +24,6 @@ def serve_transfert(ref):
     else:
         return "error"
 
-'''res = getTransfert("8374181449104","L49SgSoV")
+'''res = getTransfert("8371994824481","BaV8lnf1")
 res = json.loads(res)
 print(res['transfers'][0]['amount'])'''

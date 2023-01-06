@@ -9,7 +9,7 @@ import backend_functions
 # les variables pour controller l'affichage
 
 def display_head_image():
-    img = Image.open("./images/money.jpg")
+    img = Image.open("./images/money-bag.png")
     st.image(img, width=100)
 
 
@@ -31,31 +31,31 @@ def display_info_transfert():
 
         <div class="shadow bg-primary rounded pt-3 pb-3">
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-2 w-75 rounded-top">
-                <div class="form-label" style="font-weight: bold;">Agence ID</div>
+                <div class="form-label" style="font-weight: bold; color:black">Agence ID</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
-                <div class="form-label" style="font-weight: bold;">First Name</div>
+                <div class="form-label" style="font-weight: bold; color:black">First Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
-                <div class="form-label" style="font-weight: bold;">Last Name</div>
+                <div class="form-label" style="font-weight: bold; color:black">Last Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
-                <div class="form-label" style="font-weight: bold;">Date of issue</div>
+                <div class="form-label" style="font-weight: bold; color:black">Date of issue</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
-                <div class="form-label" style="font-weight: bold;">Amount</div>
+                <div class="form-label" style="font-weight: bold; color:black">Amount</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 w-75">
-                <div class="form-label" style="font-weight: bold;">Receiver First Name</div>
+                <div class="form-label" style="font-weight: bold; color:black">Receiver First Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
             <div class="row m-auto d-flex justify-content-between bg-white px-4 pt-1 pb-2 w-75 rounded-bottom">
-                <div class="form-label" style="font-weight: bold;">Receiver Last Name</div>
+                <div class="form-label" style="font-weight: bold; color:black">Receiver Last Name</div>
                 <div style="color: #3286E6; font-size: 20px; padding-left:50px"> {} </div>
             </div>
         </div>    
@@ -72,8 +72,8 @@ def display_title_bloc():
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-        <div style="background-color: red">
-            <div class="h2 p-3 border" style="background-color: #3286E6;color : #fff ;text-align: center;">
+        <div >
+            <div class="h1 m-auto pt-4 pb-5 border" style="background-color: #3286E6;color : #fff ;text-align: center;">
                 ENSA GAB
             </div>
         </div>
@@ -268,7 +268,8 @@ elif modal4.is_open():
         if close_modal4:
             modal4.close()
         if download:
-            st.success("The receipt dowload will begin soon")
+            print("\n\n\nThe function to acces and download file -----------------------------------\n\n")
+            modal4.close()
             # modal4.close()
         payment_modal.close()
 
@@ -437,7 +438,8 @@ elif payment_modal.is_open():
         receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
 
         columns_header = st.columns((1.56, 4, 0.75))
-        columns_header[1].header("TRANSFERT INFORMATIONS")
+        columns_header[1].markdown('<p style="font-family:sans-serif; color:black; font-size: 25px;">TRANSFERT '
+                                   'INFORMATIONS</p>', unsafe_allow_html=True)
 
         display_info_transfert()
 
@@ -448,3 +450,5 @@ elif payment_modal.is_open():
             payed = backend_functions.serve_transfert(transfert_ref)
             if payed:
                 modal4.open()
+            else:
+                modal3.open()
