@@ -95,9 +95,28 @@ modal7 = Modal("Transfert Blocked", key="blk")
 modal8 = Modal("Transfert Restitued", key="rsd")
 modal9 = Modal("Disinherited Transfert", key="dhd")
 modal10 = Modal("Transfert Extourned", key="dvd")
+modal11 = Modal("Empty GAB", key="egb")
 payment_modal = Modal("", key="pay")
 
-# debut de l'ecriture du code de la page ########################################################
+# on initialise le solde du gab dans une variable de session
+if 'gab_initial' not in st.session_state:
+    st.session_state['gab_initial'] = 1000000
+if 'ref' not in st.session_state:
+    st.session_state.ref = ""
+if 'pin' not in st.session_state:
+    st.session_state.pin = ""
+
+# pour mettre a jour le solde global du GAB a chaque transfert reussi
+def update_gab_initial(deficit):
+    st.session_state['gab_initial'] -= deficit
+
+# pour effacer les champs de saisie
+def clear_form():
+    st.session_state.ref = ""
+    st.session_state.pin = ""
+
+
+# debut de l'ecriture du code de la page ####################################################################
 
 display_head_image()
 
@@ -117,8 +136,8 @@ space_div()
 if choice == 'Other Service':
     global transfert_ref
     global transfert_p
-    transfert_reference = st.text_input("Enter the transfert reference", placeholder="Enter your transfert reference")
-    transfert_pin = st.text_input("Enter the PIN code", placeholder="Enter your PIN code")
+    transfert_reference = st.text_input("Enter the transfert reference", placeholder="Enter your transfert reference", key="ref")
+    transfert_pin = st.text_input("Enter the PIN code", placeholder="Enter your PIN code", key= "pin")
 
     # pour la partie du modal
     transfert_ref = transfert_reference
@@ -159,7 +178,6 @@ if choice == 'Other Service':
                 elif transfert_searched['transfers'][0]["status"] == "EXTOURNE":
                     modal10.open()
                 else:
-
                     payment_modal.open()
 
         else:
@@ -237,7 +255,7 @@ elif modal3.is_open():
         columns_button_text[1].write("Please retry :smiley:")
         columns_button_close = st.columns((2.7, 1, 2))
 
-        close_modal3 = columns_button_close[1].button("OK", type='primary')
+        close_modal3 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
         if close_modal3:
             modal3.close()
 
@@ -263,8 +281,8 @@ elif modal4.is_open():
 
         columns_button_close = st.columns((1, 2, 2))
 
-        download = columns_button_close[1].button("Download the Receipt", type="primary")
-        close_modal4 = columns_button_close[2].button("Finish", type="primary")
+        download = columns_button_close[1].button("Download the Receipt", type="primary", on_click=clear_form)
+        close_modal4 = columns_button_close[2].button("Finish", type="primary", on_click=clear_form)
         if close_modal4:
             modal4.close()
         if download:
@@ -317,7 +335,7 @@ elif modal6.is_open():
 
         columns_button_close = st.columns((2.7, 1, 2))
 
-        close_modal6 = columns_button_close[1].button("OK", type='primary')
+        close_modal6 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
         if close_modal6:
             modal6.close()
 
@@ -342,7 +360,7 @@ elif modal7.is_open():
         columns_button_text[1].write("Please contact the sender or the administrator for more informations :smiley:")
         columns_button_close = st.columns((2.7, 1, 2))
 
-        close_modal7 = columns_button_close[1].button("OK", type='primary')
+        close_modal7 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
         if close_modal7:
             modal7.close()
 
@@ -367,7 +385,7 @@ elif modal8.is_open():
         columns_button_text[1].write("Please contact the sender or the administrator for more informations :smiley:")
         columns_button_close = st.columns((2.7, 1, 2))
 
-        close_modal8 = columns_button_close[1].button("OK", type='primary')
+        close_modal8 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
         if close_modal8:
             modal8.close()
 
@@ -392,7 +410,7 @@ elif modal9.is_open():
         components.html(html_string)
         columns_button_close = st.columns((2.7, 1, 2))
 
-        close_modal9 = columns_button_close[1].button("OK", type='primary')
+        close_modal9 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
         if close_modal9:
             modal9.close()
 
@@ -417,10 +435,36 @@ elif modal10.is_open():
         columns_button_text[1].write("Please contact the sender or the administrator for more informations :smiley:")
         columns_button_close = st.columns((2.7, 1, 2))
 
-        close_modal10 = columns_button_close[1].button("OK", type='primary')
+        close_modal10 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
         if close_modal10:
             modal10.close()
 
+elif modal11.is_open():
+    with modal11.container():
+
+        columns_image = st.columns((2.4, 1, 2))
+        img = Image.open("./images/secure.png")
+        columns_image[1].image(img, width=100)
+
+        html_string = '''
+        <h1>Sorry ! The GAB is actually empty</h1>
+        <h2>Please come and try again later</h2>
+        
+        <script language="javascript">
+          document.querySelector("h1").style.color = "red";
+          document.querySelector("h1").style.textAlign = "center";
+          document.querySelector("h2").style.color = "orange";
+          document.querySelector("h2").style.textAlign = "center";
+        </script>
+        '''
+        components.html(html_string)
+
+        columns_button_close = st.columns((2.7, 1, 2))
+
+        close_modal11 = columns_button_close[1].button("OK", type='primary', on_click=clear_form)
+        if close_modal11:
+            modal11.close()
+        payment_modal.close()
 
 elif payment_modal.is_open():
     with payment_modal.container():
@@ -433,7 +477,7 @@ elif payment_modal.is_open():
         lastName = transfert_searched['senderLastName']
         date = transfert_searched['endedAt'].split("T")[0] + " at " + \
                transfert_searched['endedAt'].split("T")[1].split(".")[0]
-        amount = transfert_searched['transfers'][0]['amount']
+        amount = transfert_searched['transfers'][0]['transferAmount']
         receiverFirstName = transfert_searched['transfers'][0]['receiverFirstName']
         receiverLastName = transfert_searched['transfers'][0]['receiverLastName']
 
@@ -447,8 +491,13 @@ elif payment_modal.is_open():
 
         columns_button_validate = st.columns((2.2, 1, 2))
         if columns_button_validate[1].button('Validate Payment', type='primary'):
-            payed = backend_functions.serve_transfert(transfert_ref)
+            if st.session_state.gab_initial - amount < 0:
+                modal11.open()
+            else:
+                payed = backend_functions.serve_transfert(transfert_ref)
             if payed:
+                update_gab_initial(amount)
                 modal4.open()
             else:
                 modal3.open()
+
